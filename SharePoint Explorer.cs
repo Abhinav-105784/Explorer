@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Text.Json;
+using System.Net.Http;
 
 namespace Explorer
 {
@@ -52,11 +53,39 @@ namespace Explorer
                 comboBox3.Items.AddRange(configFileName.comboBox3Items.ToArray());
             }
         }*/
-        private void SharePoint_Explorer_Load(object sender, EventArgs e)
+        private async void SharePoint_Explorer_Load(object sender, EventArgs e)
         {
             try
             {
-                string excelFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data.xlsx"); //"C:\\Users\\goswamia0490\\OneDrive - ARCADIS\\Sharepoint Practice\\Explorer\\Data.xlsx";
+                string excelFileUrl = "https://raw.githubusercontent.com/Abhinav-105784/Explorer/main/Data.xlsx";
+                string excelFile = Path.Combine(@"C:\Users\goswamia0490\Downloads", "Data.xlsx"); //"C:\\Users\\goswamia0490\\OneDrive - ARCADIS\\Sharepoint Practice\\Explorer\\Data.xlsx";
+
+                using(HttpClient client = new HttpClient())
+                {
+                    var response = await client.GetAsync(excelFileUrl);
+                    response.EnsureSuccessStatusCode();
+
+                    /*if (response.Content.Headers.ContentType.MediaType != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                    {
+                        MessageBox.Show("The downloaded file is not a valid Excel file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }*/
+
+                    using (FileStream fs = new FileStream(excelFile,FileMode.Create,FileAccess.Write,FileShare.None))
+                    {
+                        await response.Content.CopyToAsync(fs);
+                    }
+                }
+
+                if( !File.Exists(excelFile))
+                {
+                    MessageBox.Show("The file was not downloaded", "Error" ,MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                FileInfo fileInfo = new FileInfo(excelFile);
+                if(fileInfo.Length==0)
+                {
+                    MessageBox.Show("The file downloaded is Empty","Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 using (ExcelPackage package = new ExcelPackage(new FileInfo(excelFile)))
                 {
@@ -112,24 +141,42 @@ namespace Explorer
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                
             }
 
            
         }
-       /* private void MoveUpTheSelection(ComboBox comboBox)
+        /* private void MoveUpTheSelection(ComboBox comboBox)
+         {
+             object selectedItem = comboBox.SelectedItem;
+             if(selectedItem!=null)
+             {
+                 int index = comboBox.SelectedIndex;
+                 if(index>0)
+                 {
+                     comboBox.Items.RemoveAt(index);
+                     comboBox.Items.Insert(index - 1, selectedItem);
+                     comboBox.SelectedIndex = index - 1;
+                 }
+             }
+         }*/
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            object selectedItem = comboBox.SelectedItem;
-            if(selectedItem!=null)
+            try
             {
-                int index = comboBox.SelectedIndex;
-                if(index>0)
+                string excelFile = Path.Combine(@"C:\Users\goswamia0490\Downloads", "Data.xlsx");
+                if(File.Exists(excelFile))
                 {
-                    comboBox.Items.RemoveAt(index);
-                    comboBox.Items.Insert(index - 1, selectedItem);
-                    comboBox.SelectedIndex = index - 1;
+                    File.Delete(excelFile);
                 }
+
             }
-        }*/
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error deleting file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         private void Open_Click(object sender, EventArgs e)
         {
             string selectedSiteName = comboBox1.SelectedItem?.ToString();
