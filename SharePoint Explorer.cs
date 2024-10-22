@@ -272,6 +272,17 @@ namespace Explorer
             }
         }
 
-       
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            string url = "https://arcadiso365.sharepoint.com/sites/Intranet-GBAResilience/SitePages/Resilience-UK-and-Ireland.aspx?xsdata=MDV8MDJ8fGY2MDg4MmU5ZTQ3NDQ0ZDE4Yzk0MDhkY2EwYzk3YmZkfDdmOTAwNTdkM2VhMDQ2ZmViMDdjZTA1Njg2MjcwODFifDB8MHw2Mzg1NjIwMzQ0MDg4NTI2Mjh8VW5rbm93bnxWR1ZoYlhOVFpXTjFjbWwwZVZObGNuWnBZMlY4ZXlKV0lqb2lNQzR3TGpBd01EQWlMQ0pRSWpvaVYybHVNeklpTENKQlRpSTZJazkwYUdWeUlpd2lWMVFpT2pFeGZRPT18MXxMMk5vWVhSekx6RTVPamt3T1dSa01qTmtMVEEzTVRjdE5HVmlZaTA1WkdVNUxUaGhORFl6TldWaU9UZGxaRjloTlRoaVpHUTBNaTAyT0RBMkxUUTRNR1V0WVRSaU5DMWxOamRpWlRZMU9USmhPREZBZFc1eExtZGliQzV6Y0dGalpYTXZiV1Z6YzJGblpYTXZNVGN5TURZd05qWXpPVFl5Tnc9PXw0YWJkZjQ3NWQ2ZmU0NGYzOGM5NDA4ZGNhMGM5N2JmZHxkZTk1MWVjZWVhZWE0NDgwYjhlY2U4ZTUxMWFiNzUzNQ%3D%3D&sdata=eW5UWVh6NWFWOW1JMTRkbVZvak1LYmw0VFkzNHlNdm1XOVVxS3NHellldz0%3D&ovuser=7f90057d-3ea0-46fe-b07c-e0568627081b%2Cmorag.oconnor%40arcadis.com&utm_campaign=UKI%20Bulletin%20-%20July%202024_Core%20list&utm_medium=email&utm_source=CMEM_%20Arcadis%20-%20SCE%20-%20UK&utm_content=&OR=Teams-HL&CT=1729593404365&clickparams=eyJBcHBOYW1lIjoiVGVhbXMtRGVza3RvcCIsIkFwcFZlcnNpb24iOiI0OS8yNDA5MTIyMTMxOCIsIkhhc0ZlZGVyYXRlZFVzZXIiOmZhbHNlfQ%3D%3D";
+            try
+            {
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading site: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }
